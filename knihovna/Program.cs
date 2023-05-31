@@ -71,7 +71,7 @@ class knihovna
             Console.ReadKey();
         }
 
-        public static void FindProduct(string autor)
+        public static void FindProductAutorem(string autor)
         {
             int pocet = Products.IndexOf(Products.Find(p => p.autor == autor));
             int pocetKnih = 0;
@@ -90,6 +90,25 @@ class knihovna
             }
             AnsiConsole.Markup($"{Products[pocet].autor} ma {pocetKnih} knihy/u");
         }
+        public static void FindProductRokem(int rok)
+        {
+            int pocet = Products.IndexOf(Products.Find(p => p.rok == rok));
+            int pocetKnih = 0;
+            foreach (var kniha in Products)
+            {
+
+                int i = 0;
+                if (Products[i].autor == Products[pocet].autor)
+                {
+                    AnsiConsole.Markup($"nazev: [Green]{Products[i].nazev}[/], autor: [Red]{Products[i].autor}[/], rok vydani: [Yellow]{Products[i].rok}[/]\n");
+                    pocetKnih++;
+                }
+                i++;
+
+
+            }
+            AnsiConsole.Markup($"{Products[pocet].autor} ma {pocetKnih} knihy/u");
+        }
     }
 
 
@@ -105,7 +124,7 @@ class knihovna
         {
 
 
-
+            var inputik = "";
             Console.Clear();
             AnsiConsole.Markup($"Zadej akci: [Green]pridat[/], [Red]odebrat[/], [Yellow]zobrazit[/], [Yellow]vyhledat[/], [Blue]konec[/]\n");
             string input = Console.ReadLine();
@@ -179,12 +198,20 @@ class knihovna
 
                 case "vyhledat":
                     {
-                        AnsiConsole.Markup("Zadej [Yellow]jmeno[/] autora ktereho knihy chceš vyhledat: ");
+                        AnsiConsole.Markup("Zadej [Grey]jmeno autora / rok vydani[/] knihy kterou chceš vyhledat: ");
                         try
                         {
-
-                            Inventory.FindProduct(Console.ReadLine());
-                            Console.ReadKey();
+                            input = Console.ReadLine();
+                            if ()
+                            {
+                                Inventory.FindProductAutorem(Console.ReadLine());
+                                Console.ReadKey();
+                            }else if(input == input)
+                            {
+                                Inventory.FindProductRokem(int.Parse(Console.ReadLine()));
+                                Console.ReadKey();
+                            }
+                            
                         }
                         catch
                         {
