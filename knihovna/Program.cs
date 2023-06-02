@@ -16,48 +16,32 @@ class knihovna
         public string autor;
         public int rok;
 
-
-
-
         public TridaKnihy(string nazev, string autor, int rok)
         {
             this.nazev = nazev;
             this.autor = autor;
             this.rok = rok;
         }
-
-
-
-
     }
-
-
 
     private static class Inventory
     {
         public static List<TridaKnihy> Products { get; set; } = new List<TridaKnihy>();
 
-
-
-        public static int pocet { get; set; }
-
-
-
+        public static int pocet { get { return Products.Count; } }
         public static void AddProduct(string nazev, string autor, int rok)
         {
             try
             {
                 Products.Add(new TridaKnihy(nazev, autor, rok));
-                pocet++;
-
+                
+                File.AppendAllText("knihovna.txt", $"{nazev},{autor},{rok}\n");
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
-
-
 
         public static void RemoveProduct(string nazev)
         {
@@ -71,43 +55,22 @@ class knihovna
             Console.ReadKey();
         }
 
-        public static void FindProductAutorem(string autor)
+        public static void FindProduct(string vyhledavanyVyraz)
         {
-            int pocet = Products.IndexOf(Products.Find(p => p.autor == autor));
-            int pocetKnih = 0;
-            foreach (var kniha in Products)
-            {
-                
-                int i = 0;
-                if (Products[i].autor == Products[pocet].autor)
-                {
-                    AnsiConsole.Markup($"nazev: [Green]{Products[i].nazev}[/], autor: [Red]{Products[i].autor}[/], rok vydani: [Yellow]{Products[i].rok}[/]\n");
-                    pocetKnih++;
-                }
-                i++;
-                
-                
-            }
-            AnsiConsole.Markup($"{Products[pocet].autor} ma {pocetKnih} knihy/u");
-        }
-        public static void FindProductRokem(int rok)
-        {
-            int pocet = Products.IndexOf(Products.Find(p => p.rok == rok));
-            int pocetKnih = 0;
-            foreach (var kniha in Products)
-            {
 
-                int i = 0;
-                if (Products[i].autor == Products[pocet].autor)
-                {
-                    AnsiConsole.Markup($"nazev: [Green]{Products[i].nazev}[/], autor: [Red]{Products[i].autor}[/], rok vydani: [Yellow]{Products[i].rok}[/]\n");
-                    pocetKnih++;
-                }
-                i++;
+            bool vyhledavamRok = false;
+            try { 
+                int.Parse(vyhledavanyVyraz);
+                vyhledavamRok = true; 
+            } catch { };
 
+            var nalezeneKnihy = new List<TridaKnihy>();
 
-            }
-            AnsiConsole.Markup($"{Products[pocet].autor} ma {pocetKnih} knihy/u");
+            if (vyhledavamRok == true) nalezeneKnihy = Inventory.Products.FindAll(k => k.rok == int.Parse(vyhledavanyVyraz));
+            if (vyhledavamRok == false) nalezeneKnihy = Inventory.Products.FindAll(k => k.autor == vyhledavanyVyraz);
+
+            foreach (var kniha in nalezeneKnihy) AnsiConsole.Markup($"nazev: [Green]{kniha.nazev}[/], autor: [Red]{kniha.autor}[/], rok vydani: [Yellow]{kniha.rok}[/]\n");
+            AnsiConsole.Markup($"Bylo nalezeno {nalezeneKnihy.Count} knih.");
         }
     }
 
@@ -134,6 +97,7 @@ class knihovna
                     {
                         try
                         {
+                            Console.Clear();
                             Console.Write("Zadej název knihy: ");
                             string nazev = Console.ReadLine();
                             Console.Write("Zadej autora knihy: ");
@@ -159,6 +123,7 @@ class knihovna
 
                 case "odebrat":
                     {
+                        Console.Clear();
                         Console.WriteLine("zadej název knihy kterou chceš odebrat");
                         try
                         {
@@ -179,6 +144,7 @@ class knihovna
 
                 case "zobrazit":
                     {
+                        Console.Clear();
                         foreach (var product in Inventory.Products)
                         {
                             AnsiConsole.Markup($"[Blue]{product.nazev}[/], [Blue]{product.autor}[/], [Blue]{product.rok}[/]\n");
@@ -198,20 +164,12 @@ class knihovna
 
                 case "vyhledat":
                     {
+                        Console.Clear();
                         AnsiConsole.Markup("Zadej [Grey]jmeno autora / rok vydani[/] knihy kterou chceš vyhledat: ");
                         try
                         {
-                            input = Console.ReadLine();
-                            if ()
-                            {
-                                Inventory.FindProductAutorem(Console.ReadLine());
-                                Console.ReadKey();
-                            }else if(input == input)
-                            {
-                                Inventory.FindProductRokem(int.Parse(Console.ReadLine()));
-                                Console.ReadKey();
-                            }
-                            
+                            Inventory.FindProduct(Console.ReadLine());
+                            Console.ReadKey();
                         }
                         catch
                         {
@@ -226,12 +184,9 @@ class knihovna
 
                 case "konec":
                     {
-                        Console.WriteLine("Konec");
-                        break;
+                        Console.WriteLine("pa");
+                        return;
                     }
-                    break;
-
-
 
             }
         }
